@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Interactiva</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .calculator {
+            background-color: #1e1e2f;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            width: 320px;
+        }
+
+        .display {
+            width: 100%;
+            height: 70px;
+            background-color: #2b2b40;
+            color: #ffffff;
+            font-size: 2rem;
+            text-align: right;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #3b3b54;
+            color: #ffffff;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #4e4e6d;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .operator {
+            background-color: #ff9f43;
+            color: #ffffff;
+        }
+
+        .operator:hover {
+            background-color: #ffb15c;
+        }
+
+        .action {
+            background-color: #ff5252;
+            color: #ffffff;
+        }
+
+        .action:hover {
+            background-color: #ff7676;
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <input type="text" class="display" id="display" value="0" disabled>
+        <div class="buttons">
+            <button class="action" onclick="clearDisplay()">AC</button>
+            <button onclick="deleteLast()">⌫</button>
+            <button class="operator" onclick="appendCharacter('%')">%</button>
+            <button class="operator" onclick="appendCharacter('/')">÷</button>
+            
+            <button onclick="appendCharacter('7')">7</button>
+            <button onclick="appendCharacter('8')">8</button>
+            <button onclick="appendCharacter('9')">9</button>
+            <button class="operator" onclick="appendCharacter('*')">×</button>
+            
+            <button onclick="appendCharacter('4')">4</button>
+            <button onclick="appendCharacter('5')">5</button>
+            <button onclick="appendCharacter('6')">6</button>
+            <button class="operator" onclick="appendCharacter('-')">-</button>
+            
+            <button onclick="appendCharacter('1')">1</button>
+            <button onclick="appendCharacter('2')">2</button>
+            <button onclick="appendCharacter('3')">3</button>
+            <button class="operator" onclick="appendCharacter('+')">+</button>
+            
+            <button class="zero" onclick="appendCharacter('0')">0</button>
+            <button onclick="appendCharacter('.')">.</button>
+            <button class="operator" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        let currentInput = '0';
+
+        function updateDisplay() {
+            display.value = currentInput;
+        }
+
+        function appendCharacter(char) {
+            if (currentInput === '0' && char !== '.') {
+                currentInput = char;
+            } else {
+                currentInput += char;
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                // Reemplazamos símbolos visuales por los operadores válidos de JavaScript
+                let expression = currentInput.replace(/×/g, '*').replace(/÷/g, '/');
+                
+                // Evaluamos la expresión matemática de manera segura básica
+                let result = eval(expression);
+                
+                if (!isFinite(result)) {
+                    throw new Error("División por cero");
+                }
+                
+                currentInput = result.toString();
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Error';
+                updateDisplay();
+                setTimeout(clearDisplay, 1500);
+            }
+        }
+    </script>
+
+</body>
+</html>
